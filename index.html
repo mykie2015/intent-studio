@@ -242,6 +242,53 @@
             transform: scale(0.98);
         }
 
+        .ideas-card {
+            padding: 24px;
+        }
+
+        .idea-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .idea {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            background: rgba(102, 126, 234, 0.08);
+            border: 1px solid rgba(102, 126, 234, 0.15);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .idea:hover, .idea:active {
+            background: rgba(102, 126, 234, 0.18);
+            border-color: rgba(102, 126, 234, 0.4);
+            transform: translateX(4px);
+        }
+
+        .idea-emoji {
+            font-size: 2rem;
+            flex-shrink: 0;
+        }
+
+        .idea-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #e0e6ed;
+            margin-bottom: 2px;
+        }
+
+        .idea-desc {
+            font-size: 0.8125rem;
+            color: #a0aec0;
+            line-height: 1.4;
+        }
+
         .footer {
             text-align: center;
             padding: 40px 20px;
@@ -321,10 +368,31 @@
             <p>Design AI agents with product taste, not code</p>
         </div>
 
+        <div class="card ideas-card">
+            <label class="input-label">💰 Top 3 OpenClaw Money-Makers — Tap to start</label>
+            <div class="idea-grid">
+                <div class="idea" onclick="selectIdea(0)">
+                    <div class="idea-emoji">🎾</div>
+                    <div class="idea-title">AI Tennis Coach</div>
+                    <div class="idea-desc">$19/mo — Video analysis + personalized drills. You ARE the customer.</div>
+                </div>
+                <div class="idea" onclick="selectIdea(1)">
+                    <div class="idea-emoji">🤖</div>
+                    <div class="idea-title">Agent Setup Service</div>
+                    <div class="idea-desc">$500-2K/client — Configure AI agents for professionals. Your enterprise edge.</div>
+                </div>
+                <div class="idea" onclick="selectIdea(2)">
+                    <div class="idea-emoji">🎯</div>
+                    <div class="idea-title">Intent Studio SaaS</div>
+                    <div class="idea-desc">$49-499/mo — Product people design AI agents without code. You own the category.</div>
+                </div>
+            </div>
+        </div>
+
         <div class="card">
             <div class="input-section">
                 <label class="input-label">Describe your AI agent idea</label>
-                <textarea id="userInput" placeholder="I want an AI that helps tennis players improve their footwork by analyzing practice videos..."></textarea>
+                <textarea id="userInput" placeholder="Tap an idea above, or describe your own..."></textarea>
             </div>
             <button class="generate-btn" id="generateBtn">Generate Intent</button>
         </div>
@@ -347,6 +415,18 @@
     <div class="toast" id="toast"></div>
 
     <script>
+        const IDEAS = [
+            "I want an AI tennis coach that analyzes practice video recordings to identify footwork issues, swing mechanics problems, and positioning errors. It should generate personalized weekly drill plans based on the player's skill level (intermediate) and specific weaknesses. Players upload short clips from their phone, get instant feedback with visual annotations, and track improvement over time.",
+            "I want an AI agent setup service where clients describe their workflow needs and I configure a complete OpenClaw-powered AI assistant for them — connected to their email, calendar, messaging, and business tools. The agent handles scheduling, customer follow-ups, data entry, and routine decisions. I deliver a fully working system within 48 hours with a 30-day support period.",
+            "I want an Intent Studio SaaS platform where product managers and founders describe their AI product idea in plain language, and the system generates a complete Intent Capsule — structured specification with objectives, outcomes, constraints, autonomy rules, and implementation notes. It bridges the gap between product thinking and agentic engineering, helping non-technical people design AI agents with precision."
+        ];
+
+        function selectIdea(index) {
+            userInput.value = IDEAS[index];
+            userInput.focus();
+            userInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
         const userInput = document.getElementById('userInput');
         const generateBtn = document.getElementById('generateBtn');
         const outputSection = document.getElementById('outputSection');
