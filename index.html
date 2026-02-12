@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Intent Studio — Design AI agents with product taste</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #0a0e27;
+            color: #e0e6ed;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 60px 20px 40px;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .hero h1 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 16px;
+        }
+
+        .hero p {
+            font-size: clamp(1rem, 3vw, 1.25rem);
+            color: #a0aec0;
+            font-weight: 300;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            animation: slideUp 0.6s ease-out;
+        }
+
+        .input-section {
+            margin-bottom: 32px;
+        }
+
+        .input-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #a0aec0;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 140px;
+            padding: 16px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            border-radius: 12px;
+            color: #e0e6ed;
+            font-size: 1rem;
+            font-family: inherit;
+            resize: vertical;
+            transition: all 0.3s ease;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        textarea::placeholder {
+            color: #4a5568;
+        }
+
+        .generate-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 1.125rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+        }
+
+        .generate-btn:active {
+            transform: translateY(0);
+        }
+
+        .generate-btn.loading {
+            pointer-events: none;
+        }
+
+        .generate-btn.loading::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shimmer 1.5s infinite;
+        }
+
+        @keyframes shimmer {
+            to {
+                left: 100%;
+            }
+        }
+
+        .output-section {
+            display: none;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .output-section.visible {
+            display: block;
+        }
+
+        .capsule {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .capsule-section {
+            margin-bottom: 28px;
+        }
+
+        .capsule-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .capsule-section h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .capsule-section p, .capsule-section li {
+            color: #cbd5e0;
+            font-size: 0.9375rem;
+            line-height: 1.7;
+        }
+
+        .capsule-section ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .capsule-section li {
+            padding-left: 24px;
+            position: relative;
+            margin-bottom: 8px;
+        }
+
+        .capsule-section li::before {
+            content: '•';
+            position: absolute;
+            left: 8px;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .checkbox-item::before {
+            content: '☐';
+            font-size: 1.25rem;
+            color: #667eea;
+            flex-shrink: 0;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            flex: 1;
+            min-width: 140px;
+            padding: 14px 20px;
+            background: rgba(102, 126, 234, 0.15);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            border-radius: 10px;
+            color: #667eea;
+            font-size: 0.9375rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover {
+            background: rgba(102, 126, 234, 0.25);
+            border-color: #667eea;
+        }
+
+        .action-btn:active {
+            transform: scale(0.98);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: #718096;
+            font-size: 0.875rem;
+            font-style: italic;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: rgba(102, 126, 234, 0.95);
+            color: white;
+            padding: 14px 24px;
+            border-radius: 8px;
+            font-size: 0.9375rem;
+            font-weight: 500;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                padding: 16px;
+            }
+
+            .card {
+                padding: 24px 20px;
+            }
+
+            .hero {
+                padding: 40px 16px 32px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .action-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <h1>Intent Studio</h1>
+            <p>Design AI agents with product taste, not code</p>
+        </div>
+
+        <div class="card">
+            <div class="input-section">
+                <label class="input-label">Describe your AI agent idea</label>
+                <textarea id="userInput" placeholder="I want an AI that helps tennis players improve their footwork by analyzing practice videos..."></textarea>
+            </div>
+            <button class="generate-btn" id="generateBtn">Generate Intent</button>
+        </div>
+
+        <div class="output-section" id="outputSection">
+            <div class="card">
+                <div class="capsule" id="capsuleOutput"></div>
+                <div class="action-buttons">
+                    <button class="action-btn" id="copyBtn">📋 Copy to Clipboard</button>
+                    <button class="action-btn" id="exportBtn">📄 Export as Markdown</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            Built by a 20-year product veteran who believes in taste + AI
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        const userInput = document.getElementById('userInput');
+        const generateBtn = document.getElementById('generateBtn');
+        const outputSection = document.getElementById('outputSection');
+        const capsuleOutput = document.getElementById('capsuleOutput');
+        const copyBtn = document.getElementById('copyBtn');
+        const exportBtn = document.getElementById('exportBtn');
+        const toast = document.getElementById('toast');
+
+        let currentCapsule = '';
+
+        function showToast(message) {
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2500);
+        }
+
+        function extractKeywords(text) {
+            const lower = text.toLowerCase();
+            const keywords = {
+                domain: null,
+                action: null,
+                users: null,
+                data: null
+            };
+
+            // Domain detection
+            const domains = {
+                'tennis|sport|athlete|player|coach': 'sports & fitness',
+                'video|image|photo|visual|camera': 'video/image analysis',
+                'health|medical|patient|doctor': 'healthcare',
+                'education|learn|student|teach': 'education',
+                'finance|money|payment|invest': 'finance',
+                'customer|support|service|help': 'customer service',
+                'content|write|blog|article': 'content creation',
+                'data|analytics|insight|report': 'data analytics',
+                'schedule|calendar|meeting|appointment': 'scheduling',
+                'code|developer|programming|software': 'software development'
+            };
+
+            for (const [pattern, domain] of Object.entries(domains)) {
+                if (new RegExp(pattern).test(lower)) {
+                    keywords.domain = domain;
+                    break;
+                }
+            }
+            keywords.domain = keywords.domain || 'general productivity';
+
+            // Action detection
+            const actions = {
+                'analyz|assess|evaluat|review': 'analyze',
+                'improv|optim|enhanc|boost': 'improve',
+                'automat|schedul|manag|organiz': 'automate',
+                'generat|creat|produc|build': 'generate',
+                'monitor|track|watch|observ': 'monitor',
+                'recommend|suggest|advis': 'recommend',
+                'teach|train|educat|coach': 'teach'
+            };
+
+            for (const [pattern, action] of Object.entries(actions)) {
+                if (new RegExp(pattern).test(lower)) {
+                    keywords.action = action;
+                    break;
+                }
+            }
+            keywords.action = keywords.action || 'assist';
+
+            // User detection
+            const users = {
+                'player|athlete|competitor': 'athletes',
+                'coach|trainer|instructor': 'coaches',
+                'student|learner': 'students',
+                'teacher|educator': 'educators',
+                'developer|programmer|engineer': 'developers',
+                'customer|client|user': 'customers',
+                'manager|executive|leader': 'managers',
+                'doctor|physician|clinician': 'healthcare professionals',
+                'designer|creator|artist': 'creators'
+            };
+
+            for (const [pattern, user] of Object.entries(users)) {
+                if (new RegExp(pattern).test(lower)) {
+                    keywords.users = user;
+                    break;
+                }
+            }
+            keywords.users = keywords.users || 'users';
+
+            // Data type detection
+            const dataTypes = {
+                'video|footage|recording': 'video',
+                'image|photo|picture': 'images',
+                'text|document|content': 'text',
+                'audio|voice|sound': 'audio',
+                'data|metric|statistic': 'data',
+                'code|script|program': 'code'
+            };
+
+            for (const [pattern, data] of Object.entries(dataTypes)) {
+                if (new RegExp(pattern).test(lower)) {
+                    keywords.data = data;
+                    break;
+                }
+            }
+            keywords.data = keywords.data || 'information';
+
+            return keywords;
+        }
+
+        function generateCapsule(input) {
+            const kw = extractKeywords(input);
+            const inputSnippet = input.length > 80 ? input.substring(0, 80) + '...' : input;
+
+            const templates = {
+                objective: `Help ${kw.users} ${kw.action} their ${kw.domain} workflows by processing ${kw.data} and delivering actionable insights. This matters because manual ${kw.domain} work is time-consuming, inconsistent, and doesn't scale—automation enables ${kw.users} to focus on high-value decisions rather than repetitive analysis.`,
+                
+                outcomes: [
+                    `${kw.users.charAt(0).toUpperCase() + kw.users.slice(1)} receive structured, actionable feedback within 24 hours of submission`,
+                    `${kw.data.charAt(0).toUpperCase() + kw.data.slice(1)} processing accuracy exceeds 90% on standard benchmarks`,
+                    `User satisfaction score (NPS) remains above 40`,
+                    `System handles peak load (3x average) without degradation`
+                ],
+
+                healthMetrics: [
+                    `Response time: Must stay under 30 seconds for 95th percentile`,
+                    `Error rate: Keep below 2% for all ${kw.data} processing operations`,
+                    `User trust: No false positives that could damage credibility`,
+                    `Privacy: Zero data leaks or unauthorized access incidents`
+                ],
+
+                strategicContext: {
+                    business: `Target market: ${kw.users} in ${kw.domain} seeking efficiency gains. Revenue model: freemium with premium features for power users. Key differentiator: taste + intelligence, not just automation.`,
+                    technical: `Stack: ${kw.data} processing pipeline with ML models for ${kw.action} tasks. Infrastructure: cloud-native, auto-scaling. Integration: API-first for third-party tools.`,
+                    user: `${kw.users.charAt(0).toUpperCase() + kw.users.slice(1)} are time-constrained, value clarity over complexity, and need mobile-first experiences. They trust systems that explain their reasoning and admit uncertainty.`
+                },
+
+                constraints: {
+                    steering: [
+                        `Prioritize clarity and explainability over raw performance`,
+                        `Default to conservative recommendations unless user explicitly opts into aggressive mode`,
+                        `Surface confidence levels for all ${kw.action} outputs`,
+                        `Maintain a conversational, non-technical tone in user-facing content`
+                    ],
+                    hard: [
+                        `Never process ${kw.data} without explicit user consent`,
+                        `Do not store raw ${kw.data} beyond 30 days unless user upgrades to premium`,
+                        `Refuse requests that could harm ${kw.users} or violate platform policies`,
+                        `Comply with GDPR, CCPA, and relevant ${kw.domain} regulations`
+                    ]
+                },
+
+                autonomy: {
+                    autonomous: [
+                        `Process incoming ${kw.data} and generate standard reports`,
+                        `Send routine notifications and progress updates`,
+                        `Apply pre-approved ${kw.action} workflows`,
+                        `Archive completed tasks after 90 days`
+                    ],
+                    escalate: [
+                        `Ambiguous ${kw.data} that falls outside training distribution`,
+                        `User requests that conflict with constraints or policies`,
+                        `System errors that affect >10% of users`,
+                        `Feature requests or feedback that suggests product-market misalignment`
+                    ]
+                },
+
+                stopRules: {
+                    complete: [
+                        `User explicitly marks task as "done" or "resolved"`,
+                        `All requested ${kw.action} outputs have been delivered and acknowledged`,
+                        `30 days of user inactivity (archive and notify)`
+                    ],
+                    escalate: [
+                        `Confidence score drops below 70% on critical ${kw.action} tasks`,
+                        `User reports incorrect or harmful output`,
+                        `Legal or compliance flag is triggered`
+                    ],
+                    halt: [
+                        `User account is suspended or deleted`,
+                        `System detects potential security breach`,
+                        `Regulatory authority issues cease-and-desist`
+                    ]
+                },
+
+                implementation: [
+                    `Start with MVP: single ${kw.data} type, one ${kw.action} workflow, web-only`,
+                    `Instrument everything: log user interactions, model confidence, error rates`,
+                    `Build feedback loops: let ${kw.users} rate outputs and flag issues`,
+                    `Iterate on constraints: review escalations weekly to refine autonomy boundaries`,
+                    `Plan for scale: design for 10x growth in ${kw.data} volume from day one`
+                ]
+            };
+
+            return {
+                objective: templates.objective,
+                outcomes: templates.outcomes,
+                healthMetrics: templates.healthMetrics,
+                strategicContext: templates.strategicContext,
+                constraints: templates.constraints,
+                autonomy: templates.autonomy,
+                stopRules: templates.stopRules,
+                implementation: templates.implementation
+            };
+        }
+
+        function renderCapsule(capsule) {
+            return `
+                <div class="capsule-section">
+                    <h3>🎯 Objective</h3>
+                    <p>${capsule.objective}</p>
+                </div>
+
+                <div class="capsule-section">
+                    <h3>✅ Desired Outcomes</h3>
+                    ${capsule.outcomes.map(outcome => `<div class="checkbox-item">${outcome}</div>`).join('')}
+                </div>
+
+                <div class="capsule-section">
+                    <h3>📊 Health Metrics</h3>
+                    <ul>
+                        ${capsule.healthMetrics.map(metric => `<li>${metric}</li>`).join('')}
+                    </ul>
+                </div>
+
+                <div class="capsule-section">
+                    <h3>🧭 Strategic Context</h3>
+                    <p><strong>Business:</strong> ${capsule.strategicContext.business}</p>
+                    <p><strong>Technical:</strong> ${capsule.strategicContext.technical}</p>
+                    <p><strong>User:</strong> ${capsule.strategicContext.user}</p>
+                </div>
+
+                <div class="capsule-section">
+                    <h3>🚧 Constraints</h3>
+                    <p><strong>Steering Constraints:</strong></p>
+                    <ul>
+                        ${capsule.constraints.steering.map(c => `<li>${c}</li>`).join('')}
+                    </ul>
+                    <p><strong>Hard Constraints:</strong></p>
+                    <ul>
+                        ${capsule.constraints.hard.map(c => `<li>${c}</li>`).join('')}
+                    </ul>
+                </div>
+
+                <div class="capsule-section">
+                    <h3>🤖 Decision Autonomy</h3>
+                    <p><strong>Autonomous Actions:</strong></p>
+                    <ul>
+                        ${capsule.autonomy.autonomous.map(a => `<li>${a}</li>`).join('')}
+                    </ul>
+                    <p><strong>Escalate to Human:</strong></p>
+                    <ul>
+                        ${capsule.autonomy.escalate.map(e => `<li>${e}</li>`).join('')}
+                    </ul>
+                </div>
+
+                <div class="capsule-section">
+                    <h3>🛑 Stop Rules</h3>
+                    <p><strong>Task Complete:</strong></p>
+                    <ul>
+                        ${capsule.stopRules.complete.map(r => `<li>${r}</li>`).join('')}
+                    </ul>
+                    <p><strong>Escalate:</strong></p>
+                    <ul>
+                        ${capsule.stopRules.escalate.map(r => `<li>${r}</li>`).join('')}
+                    </ul>
+                    <p><strong>Halt Immediately:</strong></p>
+                    <ul>
+                        ${capsule.stopRules.halt.map(r => `<li>${r}</li>`).join('')}
+                    </ul>
+                </div>
+
+                <div class="capsule-section">
+                    <h3>🔧 Implementation Notes</h3>
+                    <ul>
+                        ${capsule.implementation.map(note => `<li>${note}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+        }
+
+        function capsuleToMarkdown(capsule) {
+            return `# Intent Capsule
+
+## 🎯 Objective
+${capsule.objective}
+
+## ✅ Desired Outcomes
+${capsule.outcomes.map(o => `- [ ] ${o}`).join('\n')}
+
+## 📊 Health Metrics
+${capsule.healthMetrics.map(m => `- ${m}`).join('\n')}
+
+## 🧭 Strategic Context
+
+**Business:** ${capsule.strategicContext.business}
+
+**Technical:** ${capsule.strategicContext.technical}
+
+**User:** ${capsule.strategicContext.user}
+
+## 🚧 Constraints
+
+### Steering Constraints
+${capsule.constraints.steering.map(c => `- ${c}`).join('\n')}
+
+### Hard Constraints
+${capsule.constraints.hard.map(c => `- ${c}`).join('\n')}
+
+## 🤖 Decision Autonomy
+
+### Autonomous Actions
+${capsule.autonomy.autonomous.map(a => `- ${a}`).join('\n')}
+
+### Escalate to Human
+${capsule.autonomy.escalate.map(e => `- ${e}`).join('\n')}
+
+## 🛑 Stop Rules
+
+### Task Complete
+${capsule.stopRules.complete.map(r => `- ${r}`).join('\n')}
+
+### Escalate
+${capsule.stopRules.escalate.map(r => `- ${r}`).join('\n')}
+
+### Halt Immediately
+${capsule.stopRules.halt.map(r => `- ${r}`).join('\n')}
+
+## 🔧 Implementation Notes
+${capsule.implementation.map(n => `- ${n}`).join('\n')}
+`;
+        }
+
+        generateBtn.addEventListener('click', () => {
+            const input = userInput.value.trim();
+            
+            if (!input) {
+                showToast('Please describe your AI agent idea first');
+                return;
+            }
+
+            generateBtn.classList.add('loading');
+            generateBtn.textContent = 'Generating...';
+
+            setTimeout(() => {
+                const capsule = generateCapsule(input);
+                currentCapsule = capsule;
+                capsuleOutput.innerHTML = renderCapsule(capsule);
+                outputSection.classList.add('visible');
+                
+                generateBtn.classList.remove('loading');
+                generateBtn.textContent = 'Generate Intent';
+                
+                outputSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 1200);
+        });
+
+        copyBtn.addEventListener('click', async () => {
+            const markdown = capsuleToMarkdown(currentCapsule);
+            
+            try {
+                await navigator.clipboard.writeText(markdown);
+                showToast('Copied to clipboard!');
+            } catch (err) {
+                // Fallback for older browsers
+                const textarea = document.createElement('textarea');
+                textarea.value = markdown;
+                textarea.style.position = 'fixed';
+                textarea.style.opacity = '0';
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                showToast('Copied to clipboard!');
+            }
+        });
+
+        exportBtn.addEventListener('click', () => {
+            const markdown = capsuleToMarkdown(currentCapsule);
+            const blob = new Blob([markdown], { type: 'text/markdown' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'intent-capsule.md';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast('Exported as Markdown!');
+        });
+    </script>
+</body>
+</html>
