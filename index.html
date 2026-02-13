@@ -369,22 +369,22 @@
         </div>
 
         <div class="card ideas-card">
-            <label class="input-label">💰 Fresh Ideas (Feb 12 PM) — Tap to start</label>
+            <label class="input-label">💰 Fresh Ideas (Feb 13) — Tap to start</label>
             <div class="idea-grid">
                 <div class="idea" onclick="selectIdea(0)">
-                    <div class="idea-emoji">🎨</div>
-                    <div class="idea-title">AI Content Repurposing Tool</div>
-                    <div class="idea-desc">$29-$99/mo — One blog → 10 tweets, 5 LinkedIn posts, newsletter, video script. Saves 10+ hrs/week.</div>
+                    <div class="idea-emoji">🎬</div>
+                    <div class="idea-title">B2B "Shorts" Repurposer for LinkedIn</div>
+                    <div class="idea-desc">$99-$250/mo — AI finds 60-sec "knowledge bombs" from webinars, auto-crops for LinkedIn/Twitter. B2B tone preserved.</div>
                 </div>
                 <div class="idea" onclick="selectIdea(1)">
-                    <div class="idea-emoji">📄</div>
-                    <div class="idea-title">AI Meeting Notes & Action Items</div>
-                    <div class="idea-desc">$15-$49/mo — Record → extract decisions, action items, send follow-ups. Niche versions underserved.</div>
+                    <div class="idea-emoji">🔄</div>
+                    <div class="idea-title">Subscription Recovery for SMB SaaS</div>
+                    <div class="idea-desc">5% of recovered revenue OR $99/mo — Smart email/text sequences recover failed payments. 9% MRR recoverable.</div>
                 </div>
                 <div class="idea" onclick="selectIdea(2)">
-                    <div class="idea-emoji">🤖</div>
-                    <div class="idea-title">Custom AI Chatbots (No-Code)</div>
-                    <div class="idea-desc">$95K MRR proven (SiteGPT) — Upload docs → custom chatbot. Solves generic bot failure in enterprise.</div>
+                    <div class="idea-emoji">🗣️</div>
+                    <div class="idea-title">Voice-to-Task CRM for Field Techs</div>
+                    <div class="idea-desc">$25/user/mo — Plumbers/electricians talk to update invoices while driving. Hands-free, mobile-optimized.</div>
                 </div>
             </div>
         </div>
@@ -416,9 +416,9 @@
 
     <script>
         const IDEAS = [
-            "I want an AI content repurposing tool that takes one blog post and automatically generates 10 tweets, 5 LinkedIn posts, 1 newsletter, and 1 video script. Content creators need omnipresence across platforms but hate repetitive work. Each manual repurpose takes 15-30 minutes; AI does it in seconds. Target: content creators, marketers, solopreneurs. Revenue: $29-$99/month per user. Multiple founders already at $50K+ MRR. Go-to-market: SEO-first (rank for 'repurpose blog content'), freemium model, viral sharing in creator communities. Moat: platform-specific optimization (LinkedIn voice ≠ Twitter voice).",
-            "I want an AI meeting notes and action items tool that records meetings and automatically extracts key decisions, action items, and sends follow-ups. People forget 50% of meeting content within 1 hour. Manual note-taking distracts from conversation. Target: remote teams, consultants, freelancers, niche professionals. Revenue: $15-$49/month per user. Otter.ai validated the category, but industry-specific versions (sales calls, coaching sessions, legal consultations) are underserved. Go-to-market: vertical specialization (e.g., 'AI Meeting Notes for Real Estate Agents'). Moat: industry templates + integrations.",
-            "I want a no-code custom AI chatbot builder where businesses upload their company docs/data and generate a custom AI chatbot trained on their content. Generic ChatGPT hallucinates on company-specific questions. Businesses need accurate, branded, context-aware AI. SiteGPT founder Bhanu Teja P hit $95K MRR with this model. Target: B2B companies, customer support teams, knowledge-heavy industries. Revenue: pay-as-you-go pricing scales with usage. Go-to-market: fast MVP → enterprise adoption. Technical depth meets precise market fit. Moat: data accuracy + no-code customization. Trust gap is the real problem, not features."
+            "I want a B2B 'Shorts' repurposer for LinkedIn that uses AI to find the best 60-second 'knowledge bombs' from B2B webinars and podcasts, then auto-crops them for LinkedIn and Twitter while preserving professional tone (no clickbait). 81% of B2B marketers use generative AI for content. Creating platform-specific content takes 2-4 hours per piece. Hiring editors costs $50-100/hour. Target: B2B content marketers at growth-stage startups ($1M-$10M ARR), solo marketers or small teams (1-3). Revenue: $99-$250/month per team. Go-to-market: Content-led launch on LinkedIn showing before/after transformations. DM 50 B2B marketers offering free access. Launch on Product Hunt. Test LinkedIn ads targeting 'content marketer' + 'B2B SaaS' titles. Moat: B2B tone preservation—generic AI tools don't understand professional context.",
+            "I want a subscription recovery tool for SMB SaaS that sends smart, personalized email/text sequences to recover failed payments for membership sites. 9% of MRR is lost to failed payments (recoverable). Churn from failed cards is the 'silent killer' of the $375B SaaS industry. Most SMBs don't have sophisticated dunning systems. Target: small SaaS companies, membership sites, subscription e-commerce. Revenue: 5% of recovered revenue OR $99/month flat. Go-to-market: Performance-based pricing removes risk. Offer free trial showing recovered revenue in first 30 days. Target Stripe/LemonSqueezy user communities. Moat: Personalization engine—generic 'your card failed' emails get ignored. Context-aware messaging (tenure, usage patterns, customer value) increases recovery rates.",
+            "I want a voice-to-task CRM for field techs where plumbers, electricians, and HVAC techs can talk to update invoices, log jobs, and schedule follow-ups while driving. 50% of US consumers use voice search daily. Field services are desperate for hands-free tech. Field techs spend 30-60 min/day on admin work after hours. Voice input while driving turns dead time into productive time. Target: solo field service professionals (plumbers, electricians, HVAC, pest control). Revenue: $25/user/month. Go-to-market: Partner with trade associations. Offer 30-day free trial. Show time savings in first week. Word-of-mouth spreads fast in tight-knit trade communities. Moat: Industry-specific vocabulary—a CRM that understands 'PEX pipe' vs 'copper' or 'R-410A refrigerant' beats generic voice tools."
         ];
 
         function selectIdea(index) {
